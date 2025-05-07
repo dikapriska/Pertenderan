@@ -36,8 +36,19 @@ try:
     df_tender = pd.read_csv(url_tender)
     st.success(f"✅ Data berhasil dimuat: {len(df_tender)} entri ditemukan")
 
-    # Tampilkan data
-    st.dataframe(df_tender)
+    # --- Pagination ---
+    items_per_page = 10
+    total_items = len(df_tender)
+    total_pages = (total_items - 1) // items_per_page + 1
+
+    page = st.number_input("Halaman", min_value=1, max_value=total_pages, value=1, step=1)
+
+    start_idx = (page - 1) * items_per_page
+    end_idx = start_idx + items_per_page
+    st.write(f"Menampilkan {start_idx + 1} - {min(end_idx, total_items)} dari {total_items} data")
+
+    # Tampilkan hanya data sesuai halaman
+    st.dataframe(df_tender.iloc[start_idx:end_idx])
 
     # Statistik dasar
     st.subheader("📈 Ringkasan Statistik")
