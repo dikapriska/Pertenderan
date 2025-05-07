@@ -1,0 +1,36 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+.venv/
+env/
+ENV/
+venv/
+
+# Streamlit cache & logs
+.streamlit/
+logs/
+
+# Local configuration
+*.env
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Docker-related
+*.log
+*.pid
+*.sock
+
+# Python packaging
+*.egg-info/
+dist/
+build/
+
+# VSCode / editor settings
+.vscode/
+.idea/
+*.swp

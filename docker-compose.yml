@@ -1,0 +1,13 @@
+services:
+  streamlit:
+    container_name: streamlit-lpse
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        TAG: latest
+    ports:
+      - "7000:8501"
+    restart: always
+    environment:
+      - TZ=Asia/Jakarta
