@@ -15,12 +15,12 @@ st.set_page_config(page_title="Dashboard Tender LKPP", layout="wide")
 st.title("📊 Dashboard Tender LKPP")
 
 # --- PILIH TAHUN DENGAN URL PARAM ---
-query_params = st.experimental_get_query_params()
-tahun_param = int(query_params.get("tahun", [2025])[0])
+query_params = st.query_params
+tahun_param = int(query_params.get("tahun", ["2025"])[0])
 
-tahun_list = list(range(2022, 2026))
+tahun_list = list(range(2022, 2027))
 tahun = st.selectbox("Pilih Tahun", tahun_list, index=tahun_list.index(tahun_param))
-st.experimental_set_query_params(tahun=tahun)
+st.query_params["tahun"] = str(tahun)
 
 # --- LPSE TEST (BUATAN MANUAL) ---
 st.subheader("📍 Pilih LPSE")
