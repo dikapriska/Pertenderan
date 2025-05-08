@@ -11,7 +11,7 @@ URL_TENDER = os.getenv("URL_TENDER")
 # Parameter
 tahun = datetime.now().year
 start_kd_lpse = 10
-end_kd_lpse = 1000
+end_kd_lpse = 850
 output_dir = "data"
 output_file = os.path.join(output_dir, "daftarlpse.json")
 result_data = []
