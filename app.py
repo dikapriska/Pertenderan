@@ -3,6 +3,7 @@ import pandas as pd
 import requests
 import os
 import json
+from io import BytesIO
 from datetime import datetime
 from dotenv import load_dotenv
 from st_aggrid import AgGrid, GridOptionsBuilder
@@ -16,11 +17,7 @@ HEADERS = {
     "User-Agent": "curl/7.68.0"
 }
 
-st.set_page_config(
-    page_title="Dashboard Tender LPSE",
-    layout="wide",
-    initial_sidebar_state="collapsed"
-)
+st.set_page_config(page_title="Dashboard Tender LPSE", layout="wide", initial_sidebar_state="collapsed")
 
 st.title("📊 Dashboard Tender LPSE")
 st.subheader("🔍 Pilih LPSE dan Tahun")
@@ -93,25 +90,68 @@ try:
                 "Status": item.get("Status_Tender"),
                 "Tanggal Tayang": item.get("tanggal paket tayang", "")[:10],
                 "Metode": item.get("Metode Pemilihan"),
+                "Kategori": item.get("Kategori Pekerjaan", ""),
                 "HPS": f"Rp {int(hps):,}".replace(",", ".") if isinstance(hps, (int, float)) else "-",
             })
 
         df_tender = pd.DataFrame(tender_rows)
+        df_tender["Tanggal Tayang"] = pd.to_datetime(df_tender["Tanggal Tayang"], errors="coerce")
 
-        # --- Tampilkan dengan AgGrid ---
+        # --- Filter ---
+        st.subheader("📎 Filter")
+        instansi_filter = st.multiselect("Instansi", options=sorted(df_tender["Instansi"].dropna().unique()))
+        kategori_filter = st.multiselect("Kategori", options=sorted(df_tender["Kategori"].dropna().unique()))
+        search_term = st.text_input("🔍 Cari Nama Paket")
+
+        filtered_df = df_tender.copy()
+
+        if instansi_filter:
+            filtered_df = filtered_df[filtered_df["Instansi"].isin(instansi_filter)]
+        if kategori_filter:
+            filtered_df = filtered_df[filtered_df["Kategori"].isin(kategori_filter)]
+        if search_term:
+            filtered_df = filtered_df[filtered_df["Nama Paket"].str.contains(search_term, case=False, na=False)]
+
+        # --- Sorting ---
+        sort_order = st.selectbox("Urutkan Tanggal Tayang", ["Terbaru (Descending)", "Terlama (Ascending)"], index=0)
+        ascending = sort_order == "Terlama (Ascending)"
+        filtered_df = filtered_df.sort_values("Tanggal Tayang", ascending=ascending)
+
+        # --- Tampilkan tabel dengan AgGrid ---
         st.subheader("📄 Daftar Tender")
-        gb = GridOptionsBuilder.from_dataframe(df_tender)
+        gb = GridOptionsBuilder.from_dataframe(filtered_df)
         gb.configure_pagination(paginationAutoPageSize=False, paginationPageSize=20)
         gb.configure_default_column(resizable=True, sortable=True, filter=True)
         grid_options = gb.build()
 
         AgGrid(
-            df_tender,
+            filtered_df,
             gridOptions=grid_options,
             enable_enterprise_modules=False,
             fit_columns_on_grid_load=True,
             height=500
         )
+
+        # --- Opsi download ---
+        st.subheader("⬇️ Unduh Data")
+
+        col1, col2 = st.columns(2)
+        with col1:
+            csv = filtered_df.to_csv(index=False).encode("utf-8")
+            st.download_button("📥 Unduh CSV",
+                csv,
+                file_name="tender_lpse_{tahun}.csv",
+                mime="text/csv"
+            )
+        with col2:
+            output = BytesIO()
+            with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
+                filtered_df.to_excel(writer, index=False, sheet_name='Tender')
+            st.download_button("📥 Unduh Excel",
+                output.getvalue(),
+                file_name="tender_lpse_{tahun}.xlsx",
+                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            )
 
 except Exception as e:
     st.error(f"❌ Gagal memuat data tender: {e}")
