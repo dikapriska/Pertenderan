@@ -16,7 +16,12 @@ HEADERS = {
     "User-Agent": "curl/7.68.0"
 }
 
-st.set_page_config(page_title="Dashboard Tender LPSE", layout="wide")
+st.set_page_config(
+    page_title="Dashboard Tender LPSE",
+    layout="wide",
+    initial_sidebar_state="collapsed"
+)
+
 st.title("📊 Dashboard Tender LPSE")
 st.subheader("🔍 Pilih LPSE dan Tahun")
 

@@ -9,7 +9,7 @@ load_dotenv()
 URL_TENDER = os.getenv("URL_TENDER")
 
 # Parameter
-tahun = 2025
+tahun = datetime.now().year
 start_kd_lpse = 10
 end_kd_lpse = 1000
 output_dir = "data"
