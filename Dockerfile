@@ -13,6 +13,23 @@ RUN apt-get update && \
     libx11-dev \
     libxrender1 \
     libxext6 \
+    libjpeg-turbo8 \
+    libssl1.1 \
+    software-properties-common
+
+RUN apt-add-repository -y "deb http://security.ubuntu.com/ubuntu bionic-security main" \
+    && apt-get update
+
+RUN apt-get install -y \
+    libxrender1 \
+    libfontconfig1 \
+    libx11-dev \
+    libjpeg62 \
+    libxtst6 \
+    fontconfig \
+    xfonts-75dpi \
+    xfonts-base \
+    libpng12-0 \
     && apt-get clean
 
 # Install wkhtmltopdf
