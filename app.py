@@ -18,46 +18,58 @@ HEADERS = {
 
 st.set_page_config(page_title="Dashboard Tender LPSE", layout="wide")
 st.title("📊 Dashboard Tender LPSE")
-
-# --- Ambil data LPSE dari API JSON, fallback ke file lokal ---
 st.subheader("🔍 Pilih LPSE dan Tahun")
 
-try:
-    response = requests.get(URL_LPSE, headers=HEADERS, timeout=10)
-    response.raise_for_status()
-    data_lpse = response.json()
-    st.success("✅ Data LPSE berhasil dimuat dari API")
-except Exception:
-    st.warning("⚠️ Gagal mengambil data dari API LPSE. Menggunakan file lokal.")
+# Tombol refresh cache
+with st.sidebar:
+    st.header("🔄 Pengaturan")
+    if st.button("Refresh Cache"):
+        st.cache_data.clear()
+        st.success("✅ Cache berhasil dibersihkan. Silakan muat ulang halaman.")
+
+# --- Fungsi dengan cache untuk data LPSE dan tender ---
+@st.cache_data(ttl=604800)
+def load_lpse_data():
     try:
-        with open("data/daftarlpse.json", "r", encoding="utf-8") as f:
-            data_lpse = json.load(f)
-        st.success("✅ Data LPSE berhasil dimuat dari file lokal")
-    except Exception as e:
-        st.error(f"❌ Gagal memuat data LPSE dari file lokal: {e}")
-        st.stop()
+        response = requests.get(URL_LPSE, headers=HEADERS, timeout=10)
+        response.raise_for_status()
+        return response.json(), "API"
+    except Exception:
+        try:
+            with open("data/daftarlpse.json", "r", encoding="utf-8") as f:
+                return json.load(f), "file lokal"
+        except Exception:
+            return None, None
+
+@st.cache_data(ttl=86400)
+def load_tender_data(url):
+    response = requests.get(url, headers=HEADERS, timeout=10)
+    response.raise_for_status()
+    return response.json()
+
+# --- Ambil data LPSE ---
+data_lpse, sumber = load_lpse_data()
+if not data_lpse:
+    st.error("❌ Gagal memuat data LPSE dari API maupun file lokal.")
+    st.stop()
+else:
+    st.success(f"✅ Data LPSE berhasil dimuat dari {sumber}")
 
 # --- Dropdown pilihan LPSE ---
 lpse_options = {item['nama_lpse']: item['kd_lpse'] for item in data_lpse if item.get('kd_lpse') and item.get('nama_lpse')}
 selected_lpse = st.selectbox("Pilih LPSE", list(lpse_options.keys()))
 selected_kd_lpse = lpse_options[selected_lpse]
 
-# --- Pilih tahun (2025–2027) ---
+# --- Pilih tahun (tahun ini sampai 2 tahun ke depan) ---
 tahun_sekarang = datetime.now().year
 tahun_list = list(range(tahun_sekarang, tahun_sekarang + 3))
-
-# Set default index ke tahun sekarang
-index_default = 0
-
-tahun = st.selectbox("Pilih Tahun", tahun_list, index=index_default)
+tahun = st.selectbox("Pilih Tahun", tahun_list, index=0)
 
 # --- Ambil data tender dari API JSON ---
 url_tender = f"{URL_TENDER_BASE}/{tahun}/{selected_kd_lpse}"
 
 try:
-    response = requests.get(url_tender, headers=HEADERS, timeout=10)
-    response.raise_for_status()
-    data_json = response.json()
+    data_json = load_tender_data(url_tender)
 
     if not data_json:
         st.warning("⚠️ Tidak ada data untuk kombinasi LPSE dan tahun yang dipilih.")
