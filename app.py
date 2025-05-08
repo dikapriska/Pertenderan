@@ -77,7 +77,7 @@ try:
         # --- Tampilkan dengan AgGrid ---
         st.subheader("📄 Daftar Tender")
         gb = GridOptionsBuilder.from_dataframe(df_tender)
-        gb.configure_pagination(paginationAutoPageSize=False, paginationPageSize=10)
+        gb.configure_pagination(paginationAutoPageSize=False, paginationPageSize=20)
         gb.configure_default_column(resizable=True, sortable=True, filter=True)
         grid_options = gb.build()
 
