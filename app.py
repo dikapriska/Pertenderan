@@ -4,6 +4,7 @@ import requests
 import os
 import json
 from dotenv import load_dotenv
+from st_aggrid import AgGrid, GridOptionsBuilder
 
 # Load konfigurasi dari .env
 load_dotenv()
@@ -73,19 +74,20 @@ try:
 
         df_tender = pd.DataFrame(tender_rows)
 
-        # --- Pagination ---
-        items_per_page = 25
-        total_items = len(df_tender)
-        total_pages = (total_items - 1) // items_per_page + 1
+        # --- Tampilkan dengan AgGrid ---
+        st.subheader("📄 Daftar Tender")
+        gb = GridOptionsBuilder.from_dataframe(df_tender)
+        gb.configure_pagination(paginationAutoPageSize=False, paginationPageSize=10)
+        gb.configure_default_column(resizable=True, sortable=True, filter=True)
+        grid_options = gb.build()
 
-        page = st.number_input("Halaman", min_value=1, max_value=total_pages, value=1, step=1)
-
-        start_idx = (page - 1) * items_per_page
-        end_idx = start_idx + items_per_page
-        st.write(f"Menampilkan {start_idx + 1} - {min(end_idx, total_items)} dari {total_items} data")
-
-        # Tampilkan data sesuai halaman
-        st.dataframe(df_tender.iloc[start_idx:end_idx])
+        AgGrid(
+            df_tender,
+            gridOptions=grid_options,
+            enable_enterprise_modules=False,
+            fit_columns_on_grid_load=True,
+            height=500
+        )
 
 except Exception as e:
     st.error(f"❌ Gagal memuat data tender: {e}")
