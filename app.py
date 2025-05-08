@@ -27,7 +27,7 @@ st.subheader("🔍 Pilih LPSE dan Tahun")
 
 # Tombol refresh cache
 with st.sidebar:
-    st.header("🔄 Pengaturan")
+    st.header("⚙️ Pengaturan")
     if st.button("Refresh Cache"):
         st.cache_data.clear()
         st.success("✅ Cache berhasil dibersihkan. Silakan muat ulang halaman.")
