@@ -4,14 +4,12 @@ import requests
 import os
 import json
 from dotenv import load_dotenv
-from io import StringIO
 
 # Load konfigurasi dari .env
 load_dotenv()
 URL_LPSE = os.getenv("URL_LPSE")
 URL_TENDER_BASE = os.getenv("URL_TENDER")
 
-# Konfigurasi default request header
 HEADERS = {
     "User-Agent": "curl/7.68.0"
 }
@@ -42,22 +40,42 @@ lpse_options = {item['nama_lpse']: item['kd_lpse'] for item in data_lpse if item
 selected_lpse = st.selectbox("Pilih LPSE", list(lpse_options.keys()))
 selected_kd_lpse = lpse_options[selected_lpse]
 
-# --- Pilih tahun (2022-2026) ---
+# --- Pilih tahun (2022–2026) ---
 tahun = st.selectbox("Pilih Tahun", list(range(2026, 2021, -1)), index=0)
 
-# --- Ambil data tender dari API CSV ---
+# --- Ambil data tender dari API JSON ---
 url_tender = f"{URL_TENDER_BASE}/{tahun}/{selected_kd_lpse}"
-st.markdown(f"🔗 URL data: `{url_tender}`")
 
 try:
     response = requests.get(url_tender, headers=HEADERS, timeout=10)
     response.raise_for_status()
-    df_tender = pd.read_csv(StringIO(response.text))
+    data_json = response.json()
 
-    if df_tender.empty:
+    if not data_json:
         st.warning("⚠️ Tidak ada data untuk kombinasi LPSE dan tahun yang dipilih.")
     else:
-        st.success(f"✅ Data berhasil dimuat: {len(df_tender)} entri ditemukan")
+        st.success(f"✅ Data berhasil dimuat: {len(data_json)} entri ditemukan")
+
+        # Transformasi data JSON menjadi DataFrame yang lebih ringkas
+        tender_rows = []
+        for item in data_json:
+            tender_rows.append({
+                "Kode Tender": item.get("Kode Tender"),
+                "Nama Paket": item.get("Nama Paket"),
+                "Status": item.get("Status_Tender"),
+                "Pagu": item.get("Pagu"),
+                "HPS": item.get("HPS"),
+                "Tanggal Buat": item.get("tanggal paket dibuat", "")[:10],
+                "Tanggal Tayang": item.get("tanggal paket tayang", "")[:10],
+                "Kategori": item.get("Kategori Pekerjaan"),
+                "Metode": item.get("Metode Pemilihan"),
+                "Instansi": item.get("Instansi dan Satker", [{}])[0].get("nama_instansi", ""),
+                "Satker": item.get("Instansi dan Satker", [{}])[0].get("stk_nama", ""),
+                "Provinsi": item.get("lokasi_paket", [{}])[0].get("prp_nama", ""),
+                "Kota": item.get("lokasi_paket", [{}])[0].get("kbp_nama", ""),
+            })
+
+        df_tender = pd.DataFrame(tender_rows)
 
         # --- Pagination ---
         items_per_page = 10
@@ -70,12 +88,8 @@ try:
         end_idx = start_idx + items_per_page
         st.write(f"Menampilkan {start_idx + 1} - {min(end_idx, total_items)} dari {total_items} data")
 
-        # Tampilkan hanya data sesuai halaman
+        # Tampilkan data sesuai halaman
         st.dataframe(df_tender.iloc[start_idx:end_idx])
-
-        # Statistik dasar
-        st.subheader("📈 Ringkasan Statistik")
-        st.write(df_tender.describe(include='all'))
 
 except Exception as e:
     st.error(f"❌ Gagal memuat data tender: {e}")
