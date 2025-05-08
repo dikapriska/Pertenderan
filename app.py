@@ -3,6 +3,7 @@ import pandas as pd
 import requests
 import os
 import json
+from datetime import datetime
 from dotenv import load_dotenv
 from st_aggrid import AgGrid, GridOptionsBuilder
 
@@ -42,7 +43,13 @@ selected_lpse = st.selectbox("Pilih LPSE", list(lpse_options.keys()))
 selected_kd_lpse = lpse_options[selected_lpse]
 
 # --- Pilih tahun (2025–2027) ---
-tahun = st.selectbox("Pilih Tahun", list(range(2027, 2024, -1)), index=0)
+tahun_sekarang = datetime.now().year
+tahun_list = list(range(tahun_sekarang, tahun_sekarang + 3))
+
+# Set default index ke tahun sekarang
+index_default = 0
+
+tahun = st.selectbox("Pilih Tahun", tahun_list, index=index_default)
 
 # --- Ambil data tender dari API JSON ---
 url_tender = f"{URL_TENDER_BASE}/{tahun}/{selected_kd_lpse}"
