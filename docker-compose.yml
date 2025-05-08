@@ -16,6 +16,7 @@ services:
       - ./data:/app/data
     env_file:
       - .env
+      
   # Service untuk crawler
   crawler:
     container_name: crawler-lpse
@@ -32,3 +33,5 @@ services:
       - TZ=Asia/Jakarta
     env_file:
       - .env
+    depends_on:
+      - streamlit

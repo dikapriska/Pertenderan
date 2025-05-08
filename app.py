@@ -4,6 +4,7 @@ import requests
 import os
 import json
 from dotenv import load_dotenv
+from io import StringIO
 
 # Load konfigurasi dari .env
 load_dotenv()
@@ -51,7 +52,7 @@ st.markdown(f"🔗 URL data: `{url_tender}`")
 try:
     response = requests.get(url_tender, headers=HEADERS, timeout=10)
     response.raise_for_status()
-    df_tender = pd.read_csv(pd.compat.StringIO(response.text))
+    df_tender = pd.read_csv(StringIO(response.text))
 
     if df_tender.empty:
         st.warning("⚠️ Tidak ada data untuk kombinasi LPSE dan tahun yang dipilih.")
