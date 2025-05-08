@@ -4,11 +4,31 @@ FROM python:3.10-slim
 # Atur direktori kerja
 WORKDIR /app
 
+# Install dependencies untuk wkhtmltopdf
+RUN apt-get update && \
+    apt-get install -y \
+    wget \
+    fontconfig \
+    libfreetype6 \
+    libx11-dev \
+    libxrender1 \
+    libxext6 \
+    && apt-get clean
+
+# Install wkhtmltopdf
+RUN wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1/wkhtmltox_0.12.6.1-1.bionic_amd64.deb && \
+    dpkg -i wkhtmltox_0.12.6.1-1.bionic_amd64.deb && \
+    apt-get install -f && \
+    rm wkhtmltox_0.12.6.1-1.bionic_amd64.deb
+
 # Salin semua file ke image
 COPY . .
 
 # Install dependensi
 RUN pip install --no-cache-dir -r requirements.txt
+
+# Set environment variable untuk PDFKit
+ENV PATH="/usr/local/bin/wkhtmltopdf:${PATH}"
 
 # Expose port default Streamlit
 EXPOSE 8501

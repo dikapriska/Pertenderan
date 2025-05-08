@@ -3,6 +3,7 @@ import pandas as pd
 import requests
 import os
 import json
+import pdfkit
 from io import BytesIO
 from datetime import datetime
 from dotenv import load_dotenv
@@ -28,6 +29,27 @@ with st.sidebar:
     if st.button("Refresh Cache"):
         st.cache_data.clear()
         st.success("✅ Cache berhasil dibersihkan. Silakan muat ulang halaman.")
+
+# Fungsi untuk mengonversi DataFrame ke PDF
+def generate_pdf_from_html(dataframe, year):
+    html = dataframe.to_html(index=False)  # Convert dataframe to HTML
+    html_content = f"""
+    <html>
+    <head><style>
+    body {{font-family: Arial, sans-serif;}}
+    table {{width: 100%; border-collapse: collapse;}}
+    th, td {{border: 1px solid #ddd; padding: 8px; text-align: left;}}
+    th {{background-color: #f2f2f2;}}
+    </style></head>
+    <body>
+    <h2>Data Tender LPSE - {year}</h2>
+    {html}
+    </body></html>
+    """
+    
+    # Convert HTML to PDF using pdfkit
+    pdf = pdfkit.from_string(html_content, False)
+    return pdf
 
 # --- Fungsi dengan cache untuk data LPSE dan tender ---
 @st.cache_data(ttl=604800)
@@ -83,61 +105,83 @@ try:
         for item in data_json:
             kode_tender = item.get("Kode Tender")
             hps = item.get("HPS", 0)
+
+            tanggal_tayang_raw = item.get("tanggal paket tayang", "")
+            tanggal_tayang = tanggal_tayang_raw.split(" ")[0] if tanggal_tayang_raw else ""
+            tanggal_tayang_dt = pd.to_datetime(tanggal_tayang_raw) if tanggal_tayang_raw else pd.NaT
+
             tender_rows.append({
                 "Kode Tender": int(kode_tender) if kode_tender else None,
                 "Nama Paket": item.get("Nama Paket"),
                 "Instansi": item.get("Instansi dan Satker", [{}])[0].get("nama_instansi", ""),
                 "Status": item.get("Status_Tender"),
-                "Tanggal Tayang": item.get("tanggal paket tayang", "")[:10],
+                "Tanggal Tayang": tanggal_tayang,
                 "Metode": item.get("Metode Pemilihan"),
                 "Kategori": item.get("Kategori Pekerjaan", ""),
                 "HPS": f"Rp {int(hps):,}".replace(",", ".") if isinstance(hps, (int, float)) else "-",
+                "Tanggal Tayang DT": tanggal_tayang_dt,
             })
 
         df_tender = pd.DataFrame(tender_rows)
         df_tender["Tanggal Tayang"] = pd.to_datetime(df_tender["Tanggal Tayang"], errors="coerce")
 
-        # --- Filter ---
-        st.subheader("📎 Filter")
-        instansi_filter = st.multiselect("Instansi", options=sorted(df_tender["Instansi"].dropna().unique()))
-        kategori_filter = st.multiselect("Kategori", options=sorted(df_tender["Kategori"].dropna().unique()))
-        search_term = st.text_input("🔍 Cari Nama Paket")
+        # Filter instansi & kategori
+        st.subheader("🎛️ Filter Data")
 
-        filtered_df = df_tender.copy()
+        kategori_opsi = ["Semua"] + sorted(df_tender["Kategori"].dropna().unique().tolist())
+        instansi_opsi = ["Semua"] + sorted(df_tender["Instansi"].dropna().unique().tolist())
 
-        if instansi_filter:
-            filtered_df = filtered_df[filtered_df["Instansi"].isin(instansi_filter)]
-        if kategori_filter:
-            filtered_df = filtered_df[filtered_df["Kategori"].isin(kategori_filter)]
-        if search_term:
-            filtered_df = filtered_df[filtered_df["Nama Paket"].str.contains(search_term, case=False, na=False)]
+        selected_kategori = st.selectbox("Filter Kategori", kategori_opsi)
+        selected_instansi = st.selectbox("Filter Instansi", instansi_opsi)
 
-        # --- Sorting ---
-        sort_order = st.selectbox("Urutkan Tanggal Tayang", ["Terbaru (Descending)", "Terlama (Ascending)"], index=0)
-        ascending = sort_order == "Terlama (Ascending)"
-        filtered_df = filtered_df.sort_values("Tanggal Tayang", ascending=ascending)
+        if selected_kategori != "Semua":
+            df_tender = df_tender[df_tender["Kategori"] == selected_kategori]
+        if selected_instansi != "Semua":
+            df_tender = df_tender[df_tender["Instansi"] == selected_instansi]
+
+        # Search Nama Paket
+        search_query = st.text_input("🔍 Cari Nama Paket")
+        if search_query:
+            df_tender = df_tender[df_tender["Nama Paket"].str.contains(search_query, case=False, na=False)]
+
+        # Sort tanggal tayang DESC (default tanpa kontrol di UI)
+        df_tender = df_tender.sort_values(by="Tanggal Tayang DT", ascending=False).reset_index(drop=True)
+
+        # Hapus kolom internal
+        df_display = df_tender.drop(columns=["Tanggal Tayang DT"])
 
         # --- Tampilkan tabel dengan AgGrid ---
         st.subheader("📄 Daftar Tender")
-        gb = GridOptionsBuilder.from_dataframe(filtered_df)
+        gb = GridOptionsBuilder.from_dataframe(df_display)
         gb.configure_pagination(paginationAutoPageSize=False, paginationPageSize=20)
         gb.configure_default_column(resizable=True, sortable=True, filter=True)
         grid_options = gb.build()
 
+        custom_theme = (  
+            StAggridTheme(base="balham") 
+            .withParams({
+                "fontSize": 14,
+                "rowBorder": True,
+                "backgroundColor": "#ffffff"
+            })  
+            .withParts(['iconSetAlpine', 'colorSchemeDark'])  
+        )
+
         AgGrid(
-            filtered_df,
+            df_display,
             gridOptions=grid_options,
             enable_enterprise_modules=False,
             fit_columns_on_grid_load=True,
-            height=500
+            height=500,
+            theme="custom_theme"
         )
 
         # --- Opsi download ---
         st.subheader("⬇️ Unduh Data")
 
-        col1, col2 = st.columns(2)
+        col1, col2, col3 = st.columns(3)
         with col1:
-            csv = filtered_df.to_csv(index=False).encode("utf-8")
+            csv = df_display.to_csv(index=False).encode("utf-8")
             st.download_button("📥 Unduh CSV",
                 csv,
                 file_name="tender_lpse_{tahun}.csv",
@@ -146,11 +190,18 @@ try:
         with col2:
             output = BytesIO()
             with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
-                filtered_df.to_excel(writer, index=False, sheet_name='Tender')
+                df_display.to_excel(writer, index=False, sheet_name='Tender')
             st.download_button("📥 Unduh Excel",
                 output.getvalue(),
                 file_name="tender_lpse_{tahun}.xlsx",
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            )
+        with col3:
+            pdf = generate_pdf_from_html(df_display, tahun)
+            st.download_button("📥 Unduh PDF",
+                pdf,
+                file_name="tender_lpse_{tahun}.pdf",
+                mime="application/pdf"
             )
 
 except Exception as e:
