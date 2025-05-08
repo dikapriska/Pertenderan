@@ -1,6 +1,7 @@
 services:
+  # Service untuk aplikasi Streamlit
   streamlit:
-    container_name: streamlit-lpse
+    container_name: app-lpse
     build:
       context: .
       dockerfile: Dockerfile
@@ -11,3 +12,23 @@ services:
     restart: always
     environment:
       - TZ=Asia/Jakarta
+    volumes:
+      - ./data:/app/data
+    env_file:
+      - .env
+  # Service untuk crawler
+  crawler:
+    container_name: crawler-lpse
+    build:
+      context: .
+      dockerfile: Dockerfile.crawler
+      args:
+        TAG: latest
+    restart: always
+    volumes:
+      - ./data:/app/data
+    command: ["cron", "-f"]
+    environment:
+      - TZ=Asia/Jakarta
+    env_file:
+      - .env
