@@ -56,29 +56,25 @@ try:
     else:
         st.success(f"✅ Data berhasil dimuat: {len(data_json)} entri ditemukan")
 
-        # Transformasi data JSON menjadi DataFrame yang lebih ringkas
+        # Transformasi data JSON menjadi DataFrame
         tender_rows = []
         for item in data_json:
+            kode_tender = item.get("Kode Tender")
+            hps = item.get("HPS", 0)
             tender_rows.append({
-                "Kode Tender": item.get("Kode Tender"),
+                "Kode Tender": int(kode_tender) if kode_tender else None,
                 "Nama Paket": item.get("Nama Paket"),
-                "Status": item.get("Status_Tender"),
-                "Pagu": item.get("Pagu"),
-                "HPS": item.get("HPS"),
-                "Tanggal Buat": item.get("tanggal paket dibuat", "")[:10],
-                "Tanggal Tayang": item.get("tanggal paket tayang", "")[:10],
-                "Kategori": item.get("Kategori Pekerjaan"),
-                "Metode": item.get("Metode Pemilihan"),
                 "Instansi": item.get("Instansi dan Satker", [{}])[0].get("nama_instansi", ""),
-                "Satker": item.get("Instansi dan Satker", [{}])[0].get("stk_nama", ""),
-                "Provinsi": item.get("lokasi_paket", [{}])[0].get("prp_nama", ""),
-                "Kota": item.get("lokasi_paket", [{}])[0].get("kbp_nama", ""),
+                "Status": item.get("Status_Tender"),
+                "Tanggal Tayang": item.get("tanggal paket tayang", "")[:10],
+                "Metode": item.get("Metode Pemilihan"),
+                "HPS": f"Rp {int(hps):,}".replace(",", ".") if isinstance(hps, (int, float)) else "-",
             })
 
         df_tender = pd.DataFrame(tender_rows)
 
         # --- Pagination ---
-        items_per_page = 10
+        items_per_page = 25
         total_items = len(df_tender)
         total_pages = (total_items - 1) // items_per_page + 1
 
