@@ -41,8 +41,8 @@ lpse_options = {item['nama_lpse']: item['kd_lpse'] for item in data_lpse if item
 selected_lpse = st.selectbox("Pilih LPSE", list(lpse_options.keys()))
 selected_kd_lpse = lpse_options[selected_lpse]
 
-# --- Pilih tahun (2022–2026) ---
-tahun = st.selectbox("Pilih Tahun", list(range(2026, 2021, -1)), index=0)
+# --- Pilih tahun (2025–2027) ---
+tahun = st.selectbox("Pilih Tahun", list(range(2027, 2024, -1)), index=0)
 
 # --- Ambil data tender dari API JSON ---
 url_tender = f"{URL_TENDER_BASE}/{tahun}/{selected_kd_lpse}"
