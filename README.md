@@ -154,7 +154,7 @@ Jika Anda ingin berkontribusi pada proyek ini, silakan buka issue atau buat pull
 
 ## Lisensi
 
-Proyek ini dilisensikan di bawah [MIT License](LICENSE).
+Proyek ini dilisensikan di bawah [MIT License](https://mit-license.org).
 
 ### Penjelasan:
 

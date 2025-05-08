@@ -16,10 +16,10 @@ RUN apt-get update && \
     && apt-get clean
 
 # Install wkhtmltopdf
-RUN wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1/wkhtmltox_0.12.6.1-1.bionic_amd64.deb && \
-    dpkg -i wkhtmltox_0.12.6.1-1.bionic_amd64.deb && \
+RUN wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox_0.12.6-1.bionic_amd64.deb && \
+    dpkg -i wkhtmltox_0.12.6-1.bionic_amd64.deb && \
     apt-get install -f && \
-    rm wkhtmltox_0.12.6.1-1.bionic_amd64.deb
+    rm wkhtmltox_0.12.6-1.bionic_amd64.deb
 
 # Salin semua file ke image
 COPY . .
