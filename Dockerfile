@@ -13,7 +13,7 @@ RUN apt-get update && \
     libx11-dev \
     libxrender1 \
     libxext6 \
-    libjpeg-turbo8 \
+    libjpeg-turbo8-dev \
     software-properties-common
 
 RUN apt-add-repository -y "deb http://security.ubuntu.com/ubuntu bionic-security main" \
