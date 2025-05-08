@@ -1,10 +1,14 @@
 # Dashboard Tender LPSE
 
- 
+Aplikasi ini adalah **Dashboard Tender LPSE** yang menampilkan data tender dari LPSE (Layanan Pengadaan Secara Elektronik) di instansi pemerintah seluruh Indonesia dan memungkinkan pengguna untuk melakukan filter, pencarian, serta mengunduh data dalam format CSV, Excel dan PDF.
 
-Aplikasi ini adalah **Dashboard Tender LPSE** yang menampilkan data tender dari LPSE (Layanan Pengadaan Secara Elektronik) di instansi pemerintah seluruh Indonesia dan memungkinkan pengguna untuk melakukan filter, pencarian, serta mengunduh data dalam format CSV, Excel dam PDF.
-
-> DISCLAIMER: Penulis tidak terafiliasi dengan pengembang SPSE atau pemilik aplikasi SPSE. Aplikasi ini dikembangkan dengan tujuan akademis, bentuk pengawasan oleh masyarakat, dan membantu pengusaha untuk mempermudah otomasi perolehan informasi pengadaan dari pemerintah. Penggunaan yang tidak wajar dan mengganggu sebagian atau seluruh fungsi aplikasi SPSE pada satuan kerja menjadi tanggung jawab masing-masing pengguna. Jadi. gunakanlah dengan bijak dan secukupnya.
+> DISCLAIMER:
+>
+> Penulis tidak terafiliasi dengan pengembang SPSE atau pemilik aplikasi SPSE. Aplikasi ini dikembangkan dengan tujuan akademis, bentuk pengawasan oleh masyarakat, dan membantu pengusaha untuk mempermudah otomasi perolehan informasi pengadaan dari pemerintah.
+>
+> Penggunaan yang tidak wajar dan mengganggu sebagian atau seluruh fungsi aplikasi SPSE pada satuan kerja menjadi tanggung jawab masing-masing pengguna.
+>
+> Jadi, gunakanlah aplikasi ini dengan bijak dan secukupnya.
 
 ## Fitur Utama
 
@@ -13,14 +17,14 @@ Aplikasi ini memiliki beberapa fitur penting, antara lain:
 - **Filter Berdasarkan Kategori dan Instansi**: Pengguna dapat memilih instansi dan kategori tender yang ingin ditampilkan.
 - **Pencarian Berdasarkan Nama Paket**: Pengguna dapat mencari nama paket tender yang relevan dengan memasukkan kata kunci.
 - **Pengunduhan Data**: Pengguna dapat mengunduh data tender dalam format **CSV** atau **Excel**.
-- **Export to PDF**: Pengguna dapat mengonversi tampilan tabel ke format PDF menggunakan **pdfkit**.
+- **Export to PDF**: Pengguna dapat mengonversi tampilan tabel ke format PDF.
 
 ## Persyaratan
 
-Sebelum menjalankan aplikasi, pastikan Anda sudah menginstal beberapa dependensi berikut:
+Sebelum menjalankan aplikasi, pastikan Anda sudah menginstal salah satu dependensi berikut:
 
-- Python &gt; 3.10
-- **Docker** (jika ingin menjalankan aplikasi di dalam container Docker)
+- Python &gt;= 3.10
+- Docker (jika ingin menjalankan aplikasi di dalam container Docker)
 
 ## Instalasi
 
@@ -154,7 +158,7 @@ Proyek ini dilisensikan di bawah [MIT License](LICENSE).
 
 ### Penjelasan:
 
-- **Fitur Utama**: Menyebutkan semua fitur yang ada di aplikasi Anda, seperti filter, pencarian, download CSV/Excel, dan eksport PDF.
+- **Fitur Utama**: Menyebutkan semua fitur yang ada di aplikasi Anda, seperti filter, pencarian, download CSV atau Excel, dan eksport PDF.
 - **Instalasi**: Menyediakan instruksi untuk instalasi baik di lokal (menggunakan virtual environment) maupun menggunakan Docker.
 - **Penggunaan**: Memberikan panduan cara menggunakan aplikasi setelah dijalankan.
 - **Kontribusi**: Mengundang orang lain untuk berkontribusi pada proyek ini jika mereka tertarik.
