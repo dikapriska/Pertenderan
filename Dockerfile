@@ -14,7 +14,6 @@ RUN apt-get update && \
     libxrender1 \
     libxext6 \
     libjpeg-turbo8 \
-    libssl1.1 \
     software-properties-common
 
 RUN apt-add-repository -y "deb http://security.ubuntu.com/ubuntu bionic-security main" \
@@ -32,11 +31,14 @@ RUN apt-get install -y \
     libpng12-0 \
     && apt-get clean
 
+RUN wget http://archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.0g-2ubuntu4_amd64.deb \
+    && dpkg -i libssl1.1_1.1.0g-2ubuntu4_amd64.deb
+
 # Install wkhtmltopdf
-RUN wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox_0.12.6-1.bionic_amd64.deb && \
-    dpkg -i wkhtmltox_0.12.6-1.bionic_amd64.deb && \
-    apt-get install -f && \
-    rm wkhtmltox_0.12.6-1.bionic_amd64.deb
+RUN wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-3/wkhtmltox_0.12.6.1-3.bookworm_amd64.deb \
+    && dpkg -i wkhtmltox_0.12.6.1-3.bookworm_amd64.deb && \
+    apt-get install -f \
+    && rm wkhtmltox_0.12.6.1-3.bookworm_amd64.deb
 
 # Salin semua file ke image
 COPY . .
