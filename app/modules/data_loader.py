@@ -38,7 +38,7 @@ def load_and_prepare_tender_data(lpse_options, selected_lpse, tahun):
         total = len(lpse_options)
         progress_bar = st.progress(0, text="🔄 Memuat data tender dari semua LPSE...")
         for idx, (nama_lpse, kd_lpse) in enumerate(lpse_options.items(), 1):
-            url = f"{st.secrets.URL_TENDER_BASE}/{tahun}/{kd_lpse}"
+            url = f"{URL_TENDER_BASE}/{tahun}/{kd_lpse}"
             try:
                 result = load_tender_data_func(url)
                 for row in result:
@@ -51,7 +51,7 @@ def load_and_prepare_tender_data(lpse_options, selected_lpse, tahun):
         progress_bar.empty()
     else:
         kd_lpse = lpse_options[selected_lpse]
-        url = f"{st.secrets.URL_TENDER_BASE}/{tahun}/{kd_lpse}"
+        url = f"{URL_TENDER_BASE}/{tahun}/{kd_lpse}"
         with st.spinner(f"🔄 Memuat data dari {selected_lpse}..."):
             try:
                 data_json = load_tender_data_func(url)
