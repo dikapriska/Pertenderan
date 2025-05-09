@@ -1,7 +1,7 @@
 services:
   # Service untuk aplikasi Streamlit
-  streamlit:
-    container_name: app-lpse
+  dashboard:
+    container_name: lpse-app
     build:
       context: .
       dockerfile: Dockerfile
@@ -19,7 +19,7 @@ services:
       
   # Service untuk crawler
   crawler:
-    container_name: crawler-lpse
+    container_name: lpse-crawler
     build:
       context: .
       dockerfile: Dockerfile.crawler
