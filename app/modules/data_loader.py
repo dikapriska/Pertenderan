@@ -40,7 +40,7 @@ def load_and_prepare_tender_data(lpse_options, selected_lpse, tahun):
         for idx, (nama_lpse, kd_lpse) in enumerate(lpse_options.items(), 1):
             url = f"{URL_TENDER_BASE}/{tahun}/{kd_lpse}"
             try:
-                result = load_tender_data_func(url)
+                result = load_tender_data(url)
                 for row in result:
                     row["nama_lpse"] = nama_lpse
                 data_json.extend(result)
@@ -54,7 +54,7 @@ def load_and_prepare_tender_data(lpse_options, selected_lpse, tahun):
         url = f"{URL_TENDER_BASE}/{tahun}/{kd_lpse}"
         with st.spinner(f"🔄 Memuat data dari {selected_lpse}..."):
             try:
-                data_json = load_tender_data_func(url)
+                data_json = load_tender_data(url)
                 for row in data_json:
                     row["nama_lpse"] = selected_lpse
             except Exception as e:
@@ -62,7 +62,6 @@ def load_and_prepare_tender_data(lpse_options, selected_lpse, tahun):
                 st.stop()
 
     if not data_json:
-        st.warning("⚠️ Tidak ada data untuk kombinasi LPSE dan tahun yang dipilih.")
         return pd.DataFrame()
 
     tender_rows = []
