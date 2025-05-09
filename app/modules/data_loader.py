@@ -31,7 +31,7 @@ def load_tender_data(url):
     response.raise_for_status()
     return response.json()
 
-def load_and_prepare_tender_data(selected_lpse, tahun, lpse_options, load_tender_data_func):
+def load_and_prepare_tender_data(lpse_options, selected_lpse, tahun):
     data_json = []
 
     if selected_lpse == "Semua":
