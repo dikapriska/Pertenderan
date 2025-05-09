@@ -123,7 +123,22 @@ try:
             })
 
         df_tender = pd.DataFrame(tender_rows)
-        df_tender["Tanggal Tayang"] = pd.to_datetime(df_tender["Tanggal Tayang"], errors="coerce")
+
+        # Konversi tanggal ke format DD Bulan Tahun (Indonesia)
+        def format_tanggal_indonesia(dt):
+            bulan_id = [
+                "", "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+                "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+            ]
+            if pd.isnull(dt):
+                return ""
+            dt = pd.to_datetime(dt, errors="coerce")
+            if pd.isnull(dt):
+                return ""
+            return f"{dt.day} {bulan_id[dt.month]} {dt.year}"
+
+        # Format tanggal
+        df_tender["Tanggal Tayang"] = pd.to_datetime(df_tender["Tanggal Tayang"], errors="coerce").apply(format_tanggal_indonesia)
 
         # Filter instansi & kategori
         st.subheader("🎛️ Filter Data")
