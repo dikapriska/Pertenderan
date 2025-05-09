@@ -45,9 +45,8 @@ def load_and_prepare_tender_data(lpse_options, selected_lpse, tahun):
                     row["nama_lpse"] = nama_lpse
                 data_json.extend(result)
             except Exception:
-                # Tidak ditampilkan agar tidak mengganggu UI
                 pass
-            progress_bar.progress(idx / total, text=f"🔄 Memuat LPSE: {nama_lpse} ({idx}/{total})")
+            progress_bar.progress(idx / total, text=f"🔄 Memuat data {nama_lpse} ({idx}/{total})")
         progress_bar.empty()
     else:
         kd_lpse = lpse_options[selected_lpse]
