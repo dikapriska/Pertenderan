@@ -188,7 +188,7 @@ try:
             csv = df_display.to_csv(index=False).encode("utf-8")
             st.download_button("📥 Unduh CSV",
                 csv,
-                file_name="tender_lpse_{tahun}.csv",
+                file_name="tender_lpse.csv",
                 mime="text/csv"
             )
         with col2:
@@ -197,14 +197,14 @@ try:
                 df_display.to_excel(writer, index=False, sheet_name='Tender')
             st.download_button("📥 Unduh Excel",
                 output.getvalue(),
-                file_name="tender_lpse_{tahun}.xlsx",
+                file_name="tender_lpse.xlsx",
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             )
         with col3:
             pdf = generate_pdf_from_html(df_display, tahun)
             st.download_button("📥 Unduh PDF",
                 pdf,
-                file_name="tender_lpse_{tahun}.pdf",
+                file_name="tender_lpse.pdf",
                 mime="application/pdf"
             )
 
