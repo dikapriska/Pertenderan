@@ -157,23 +157,13 @@ try:
         gb.configure_default_column(resizable=True, sortable=True, filter=True)
         grid_options = gb.build()
 
-        custom_theme = (  
-            StAggridTheme(base="balham") 
-            .withParams({
-                "fontSize": 14,
-                "rowBorder": True,
-                "backgroundColor": "#ffffff"
-            })  
-            .withParts(['iconSetAlpine', 'colorSchemeDark'])  
-        )
-
         AgGrid(
             df_display,
             gridOptions=grid_options,
             enable_enterprise_modules=False,
             fit_columns_on_grid_load=True,
             height=500,
-            theme="custom_theme"
+            theme="balham"
         )
 
         # --- Opsi download ---
