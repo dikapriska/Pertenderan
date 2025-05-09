@@ -4,33 +4,39 @@ FROM python:3.10-slim
 # Atur direktori kerja
 WORKDIR /app
 
-# Install dependencies untuk wkhtmltopdf
+# Install dependencies untuk wkhtmltopdf dan hapus cache agar image lebih kecil
 RUN apt-get update && \
-    apt-get install -y \
+    apt-get install -y --no-install-recommends \
     wget \
     fontconfig \
     libfreetype6 \
     libx11-dev \
     libxrender1 \
     libxext6 \
-    libjpeg-turbo8-dev \
     xfonts-75dpi \
     xfonts-base \
-    && apt-get clean
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
+# Download dan install libjpeg-turbo, lalu hapus file.deb
+RUN wget http://mirrors.kernel.org/ubuntu/pool/main/libj/libjpeg-turbo/libjpeg-turbo8_2.1.2-0ubuntu1_amd64.deb \
+    && dpkg -i libjpeg-turbo8_2.1.2-0ubuntu1_amd64.deb \
+    && rm libjpeg-turbo8_2.1.2-0ubuntu1_amd64.deb
+
+# Download dan install libssl1.1, lalu hapus file .deb
 RUN wget http://archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.0g-2ubuntu4_amd64.deb \
-    && dpkg -i libssl1.1_1.1.0g-2ubuntu4_amd64.deb
+    && dpkg -i libssl1.1_1.1.0g-2ubuntu4_amd64.deb \
+    && rm libssl1.1_1.1.0g-2ubuntu4_amd64.deb
 
-# Install wkhtmltopdf
+# Download dan install wkhtmltopdf, install dependensi yang kurang, lalu hapus file .deb
 RUN wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-3/wkhtmltox_0.12.6.1-3.bookworm_amd64.deb \
-    && dpkg -i wkhtmltox_0.12.6.1-3.bookworm_amd64.deb && \
-    apt-get install -f \
-    && rm wkhtmltox_0.12.6.1-3.bookworm_amd64.deb
+    && dpkg -i wkhtmltox_0.12.6.1-3.bookworm_amd64.deb || apt-get install -f -y \
+    && rm wkhtmltox_0.12.6.1-3.bookworm_amd64.deb \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Salin semua file ke image
 COPY . .
 
-# Install dependensi
+# Install dependensi Python
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Set environment variable untuk PDFKit
