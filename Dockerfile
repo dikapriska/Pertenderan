@@ -15,23 +15,18 @@ RUN apt-get update && \
     libxext6 \
     xfonts-75dpi \
     xfonts-base \
+    wkhtmltopdf \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Download dan install libjpeg-turbo, lalu hapus file.deb
-RUN wget http://mirrors.kernel.org/ubuntu/pool/main/libj/libjpeg-turbo/libjpeg-turbo8_2.1.2-0ubuntu1_amd64.deb \
-    && dpkg -i libjpeg-turbo8_2.1.2-0ubuntu1_amd64.deb \
-    && rm libjpeg-turbo8_2.1.2-0ubuntu1_amd64.deb
+#RUN wget http://mirrors.kernel.org/ubuntu/pool/main/libj/libjpeg-turbo/libjpeg-turbo8_2.1.2-0ubuntu1_amd64.deb \
+#    && dpkg -i libjpeg-turbo8_2.1.2-0ubuntu1_amd64.deb \
+#    && rm libjpeg-turbo8_2.1.2-0ubuntu1_amd64.deb
 
 # Download dan install libssl1.1, lalu hapus file .deb
-RUN wget http://archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.0g-2ubuntu4_amd64.deb \
-    && dpkg -i libssl1.1_1.1.0g-2ubuntu4_amd64.deb \
-    && rm libssl1.1_1.1.0g-2ubuntu4_amd64.deb
-
-# Download dan install wkhtmltopdf, install dependensi yang kurang, lalu hapus file .deb
-RUN wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-3/wkhtmltox_0.12.6.1-3.bookworm_amd64.deb \
-    && dpkg -i wkhtmltox_0.12.6.1-3.bookworm_amd64.deb || apt-get install -f -y \
-    && rm wkhtmltox_0.12.6.1-3.bookworm_amd64.deb \
-    && apt-get clean && rm -rf /var/lib/apt/lists/*
+#RUN wget http://archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.0g-2ubuntu4_amd64.deb \
+#    && dpkg -i libssl1.1_1.1.0g-2ubuntu4_amd64.deb \
+#    && rm libssl1.1_1.1.0g-2ubuntu4_amd64.deb
 
 # Salin semua file ke image
 COPY . .
