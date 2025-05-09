@@ -35,7 +35,7 @@ COPY . .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Set environment variable untuk PDFKit
-ENV PATH="/usr/local/bin/wkhtmltopdf:${PATH}"
+#ENV PATH="/usr/local/bin/wkhtmltopdf:${PATH}"
 
 # Expose port default Streamlit
 EXPOSE 8501
