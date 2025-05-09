@@ -7,14 +7,14 @@ from .utils import generate_pdf_from_html, format_tanggal_indonesia
 def show_filters(df):
     st.subheader("🎛️ Filter Data")
 
-    kategori_opsi = ["Semua"] + sorted(df["Kategori"].dropna().unique().tolist())
+    kategori_opsi = ["Semua"] + sorted(df["Jenis Pengadaan"].dropna().unique().tolist())
     instansi_opsi = ["Semua"] + sorted(df["Instansi"].dropna().unique().tolist())
 
     selected_kategori = st.selectbox("Jenis Pengadaan", kategori_opsi)
     selected_instansi = st.selectbox("Nama K/L/PD/Instansi Lainnya", instansi_opsi)
 
     if selected_kategori != "Semua":
-        df = df[df["Kategori"] == selected_kategori]
+        df = df[df["Jenis Pengadaan"] == selected_kategori]
     if selected_instansi != "Semua":
         df = df[df["Instansi"] == selected_instansi]
 
