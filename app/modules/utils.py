@@ -1,5 +1,5 @@
 import pandas as pd
-import pdfkit
+from datetime import datetime
 
 def format_tanggal_indonesia(dt):
     bulan_id = [
@@ -14,33 +14,19 @@ def format_tanggal_indonesia(dt):
     return f"{dt.day} {bulan_id[dt.month]} {dt.year}"
 
 def generate_pdf_from_html(dataframe, year):
+    import pdfkit
+
     html = dataframe.to_html(index=False, border=0)
     html_content = f"""
     <html>
     <head>
-        <meta charset="UTF-8">
+        <meta charset=\"UTF-8\">
         <style>
-            body {{
-                font-family: Arial, sans-serif;
-                margin: 20px;
-                font-size: 12px;
-            }}
-            h2 {{
-                text-align: center;
-                margin-bottom: 20px;
-            }}
-            table {{
-                width: 100%;
-                border-collapse: collapse;
-            }}
-            th, td {{
-                border: 1px solid #ddd;
-                padding: 8px;
-                text-align: left;
-            }}
-            th {{
-                background-color: #f2f2f2;
-            }}
+            body {{ font-family: Arial; font-size: 12px; margin: 20px; }}
+            h2 {{ text-align: center; }}
+            table {{ width: 100%; border-collapse: collapse; }}
+            th, td {{ border: 1px solid #ccc; padding: 6px; }}
+            th {{ background-color: #f2f2f2; }}
         </style>
     </head>
     <body>
@@ -49,6 +35,7 @@ def generate_pdf_from_html(dataframe, year):
     </body>
     </html>
     """
+
     options = {
         'page-size': 'A4',
         'encoding': 'UTF-8',

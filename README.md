@@ -52,12 +52,12 @@ Sebelum menjalankan aplikasi, pastikan Anda sudah menginstal salah satu dependen
    Kemudian, install semua dependensi yang diperlukan:
 
    ```bash
-   pip install -r requirements.txt
+   pip install -r app/requirements.txt
    ```
 
 3. **Siapkan File Konfigurasi** `.env`
 
-   Buat file `.env` di root direktori proyek Anda dan tambahkan konfigurasi berikut:
+   Buat file `.env` di root direktori **app** dan tambahkan konfigurasi berikut:
 
    ```
    URL_LPSE=<URL-API-LPSE>
@@ -69,7 +69,7 @@ Sebelum menjalankan aplikasi, pastikan Anda sudah menginstal salah satu dependen
    Setelah dependensi terinstal dan file konfigurasi selesai, Anda dapat menjalankan aplikasi dengan perintah:
 
    ```bash
-   streamlit run app.py
+   streamlit run app/app.py
    ```
 
    Aplikasi akan berjalan di `http://localhost:8501`.

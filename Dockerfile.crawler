@@ -10,7 +10,7 @@ RUN apt-get update \
 WORKDIR /app
 
 # Salin semua file ke image
-COPY . .
+COPY crawler/ .
 
 # Install dependensi
 RUN pip install --no-cache-dir -r requirements.txt

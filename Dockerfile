@@ -19,7 +19,7 @@ RUN apt-get update && \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Salin semua file ke image
-COPY . .
+COPY app/ .
 
 # Install dependensi Python
 RUN pip install --no-cache-dir -r requirements.txt

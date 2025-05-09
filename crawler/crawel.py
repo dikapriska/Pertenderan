@@ -45,7 +45,7 @@ for kd_lpse in range(start_kd_lpse, end_kd_lpse + 1):
             print(f"[x] LPSE {kd_lpse} - Status: {response.status_code}")
     except Exception as e:
         print(f"[!] Error LPSE {kd_lpse}: {e}")
-    sleep(10)  # Ubah jika perlu
+    sleep(30)  # Ubah jika perlu
 
 # Simpan hasil
 with open(output_file, "w", encoding="utf-8") as f:
