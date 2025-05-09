@@ -177,8 +177,7 @@ try:
             gridOptions=grid_options,
             enable_enterprise_modules=False,
             fit_columns_on_grid_load=True,
-            height=500,
-            theme="balham"
+            height=500
         )
 
         # --- Opsi download ---
