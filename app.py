@@ -140,14 +140,14 @@ try:
         # Format tanggal
         df_tender["Tanggal Tayang"] = pd.to_datetime(df_tender["Tanggal Tayang"], errors="coerce").apply(format_tanggal_indonesia)
 
-        # Filter instansi & kategori
+        # Filter instansi & Jenis Pengadaan
         st.subheader("🎛️ Filter Data")
 
         kategori_opsi = ["Semua"] + sorted(df_tender["Kategori"].dropna().unique().tolist())
         instansi_opsi = ["Semua"] + sorted(df_tender["Instansi"].dropna().unique().tolist())
 
-        selected_kategori = st.selectbox("Filter Kategori", kategori_opsi)
-        selected_instansi = st.selectbox("Filter Instansi", instansi_opsi)
+        selected_kategori = st.selectbox("Jenis Pengadaan", kategori_opsi)
+        selected_instansi = st.selectbox("Nama K/L/PD/Instansi Lainnya", instansi_opsi)
 
         if selected_kategori != "Semua":
             df_tender = df_tender[df_tender["Kategori"] == selected_kategori]
