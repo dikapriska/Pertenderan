@@ -155,10 +155,3 @@ Jika Anda ingin berkontribusi pada proyek ini, silakan buka issue atau buat pull
 ## Lisensi
 
 Proyek ini dilisensikan di bawah [MIT License](https://mit-license.org).
-
-### Penjelasan:
-
-- **Fitur Utama**: Menyebutkan semua fitur yang ada di aplikasi Anda, seperti filter, pencarian, download CSV atau Excel, dan eksport PDF.
-- **Instalasi**: Menyediakan instruksi untuk instalasi baik di lokal (menggunakan virtual environment) maupun menggunakan Docker.
-- **Penggunaan**: Memberikan panduan cara menggunakan aplikasi setelah dijalankan.
-- **Kontribusi**: Mengundang orang lain untuk berkontribusi pada proyek ini jika mereka tertarik.
