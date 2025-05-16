@@ -16,7 +16,11 @@ RUN apt-get update && \
     xfonts-75dpi \
     xfonts-base \
     wkhtmltopdf \
-    && apt-get clean && rm -rf /var/lib/apt/lists/*
+    tzdata \
+    && ln -fs /usr/share/zoneinfo/Asia/Jakarta /etc/localtime \
+    && dpkg-reconfigure -f noninteractive tzdata \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 # Salin semua file ke image
 COPY app/ .

@@ -3,7 +3,9 @@ FROM python:3.10-slim
 
 # Install cron
 RUN apt-get update \
-    && apt-get install -y cron \
+    && apt-get install -y cron tzdata \
+    && ln -fs /usr/share/zoneinfo/Asia/Jakarta /etc/localtime \
+    && dpkg-reconfigure -f noninteractive tzdata \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Atur direktori kerja
